@@ -56,5 +56,5 @@ isNameInAddressBook firstName = null <<< filter filterByFirstName
   filterByFirstName :: Entry -> Boolean
   filterByFirstName entry = entry.firstName == firstName
 
--- removeDuplicates :: AddressBook -> AddressBook
--- removeDuplicates =  <<< nubBy(\x y => x.firstName == y.firstName)
+removeDuplicates :: AddressBook -> AddressBook
+removeDuplicates = nubBy (\x y -> x.firstName == y.firstName && x.lastName == y.lastName)
