@@ -1,7 +1,7 @@
 module Data.Picture where
 
 import Prelude
-
+import Data.Maybe (Maybe(..))
 import Data.Foldable (foldl)
 import Global as Global
 import Math as Math
@@ -30,6 +30,14 @@ showShape (Line start end) =
   "Line [start: " <> showPoint start <> ", end: " <> showPoint end <> "]"
 showShape (Text loc text) =
   "Text [location: " <> showPoint loc <> ", text: " <> show text <> "]"
+
+-- exercise
+circle :: Shape
+circle = Circle (Point {x : 0.0, y : 0.0}) 10.0
+
+getShapeText :: Shape -> Maybe String
+getShapeText (Text p x) = Just x
+getShapeText _          = Nothing
 
 type Picture = Array Shape
 
@@ -118,3 +126,8 @@ bounds = foldl combine emptyBounds
   where
   combine :: Bounds -> Shape -> Bounds
   combine b shape = shapeBounds shape \/ b
+
+area :: Shape -> Number
+area (Circle _ radius) = Math.pi * (radius `Math.pow` 2.0)
+area (Rectangle _ width height) = width * height
+area _ = 0.0
