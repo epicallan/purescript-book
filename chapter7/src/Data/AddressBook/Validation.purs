@@ -1,14 +1,17 @@
 module Data.AddressBook.Validation where
 
 import Prelude
+import Control.Alt (class Functor)
 import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), address, person, phoneNumber)
 import Data.Either (Either(..))
+import Data.Foldable (class Foldable)
 import Data.String (length)
 import Data.String.Regex (Regex, test, regex)
 import Data.String.Regex.Flags (noFlags)
-import Data.Traversable (traverse)
+import Data.Traversable (class Traversable, traverse)
 import Data.Validation.Semigroup (V, unV, invalid)
 import Partial.Unsafe (unsafePartial)
+
 
 type Errors = Array String
 
@@ -54,3 +57,21 @@ validatePerson (Person o) =
 
 validatePerson' :: Person -> Either Errors Person
 validatePerson' p = unV Left Right $ validatePerson p
+
+
+data Tree a
+  = Empty
+  | Leaf a
+  | Node (Tree a) a (Tree a)
+
+instance treeFunctor  :: Functor Tree where
+  map _ Empty = Empty
+  map f (Leaf x) = Leaf (f x)
+  map f (Node l x r) = Node (map f l) (f x) (map f r)
+
+
+instance foldableTree :: Foldable Tree where
+  -- foldr :: (a -> b -> b) -> b -> t a -> b
+  foldr _ z Empty = z
+  foldr f z (Leaf a) = (f z a)
+  foldr f z (Node l x r) = foldr f (f z (foldr z l)) r

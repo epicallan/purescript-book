@@ -1,6 +1,8 @@
 module Data.AddressBook where
-
 import Prelude
+import Data.Either
+import Data.Maybe
+import Control.Apply(lift2, (<$>), (<*>))
 
 newtype Address = Address
   { street :: String
@@ -73,3 +75,28 @@ instance showPerson :: Show Person where
     ", homeAddress: " <> show o.homeAddress <>
     ", phones: "      <> show o.phones <>
     " }"
+
+--- exercises
+
+
+maybeAdd :: Maybe Number -> Maybe Number -> Maybe Number
+maybeAdd = lift2 (+)
+
+-- lift3' :: forall a b c d f. Apply f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+-- lift3' f a b c = f <$> a <*> b <$> b <*> c
+
+combineMaybe :: forall a f. Applicative f => Maybe (f a) -> f (Maybe a)
+combineMaybe Nothing = pure Nothing
+combineMaybe (Just x ) = Just <$> x
+
+
+nonEmpty :: String -> Either String Unit
+nonEmpty "" = Left "Field cannot be empty"
+nonEmpty _  = Right unit
+
+validatePerson :: Person -> Either String Person
+validatePerson (Person o) =
+  person <$> (nonEmpty o.firstName *> pure o.firstName)
+         <*> (nonEmpty o.lastName  *> pure o.lastName)
+         <*> pure o.homeAddress
+         <*> pure o.phones

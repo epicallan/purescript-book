@@ -9,7 +9,7 @@ module Data.Hashable
 
 import Prelude
 
-import Data.Char (toCharCode)
+-- import Data.Char (toCharCode)
 import Data.Either (Either(..))
 import Data.Foldable (foldl)
 import Data.Function (on)
